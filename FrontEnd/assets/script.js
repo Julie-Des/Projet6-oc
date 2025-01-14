@@ -4,15 +4,46 @@ const works = await response.json();
 
 // Récupération de l'élément du DOM qui accueille la galerie
 const gallery = document.querySelector(".gallery");
-// Initialisation du set
-const categories = new Set();
+// Récupération de l'élément du DOM qui accueille les filtres
+const filters = document.querySelector(".filters");
+// Récupération des catégories
+const categories = new Set(works.map(work => work.category.name));
 
-generateWorks(works);
+displayWorks(works);
 
-function generateWorks(worksToDisplay) {
+// Gestion du bouton "Tous"
+const allButton = document.createElement("button");
+allButton.innerText = "Tous";
+allButton.classList.add("active");
+filters.appendChild(allButton);
 
-  for (let i = 0; i < worksToDisplay.length; i++) {
-    const work = worksToDisplay[i];
+allButton.addEventListener("click", () => {
+  clearGallery();
+  activeButton(allButton);
+  displayWorks(works);
+})
+
+// Gestion des boutons en fonction des catégories
+categories.forEach(category => {
+  const categoryButton = document.createElement("button");
+  categoryButton.innerText = category;
+  filters.appendChild(categoryButton);
+
+  categoryButton.addEventListener("click", () => {
+    activeButton(categoryButton);
+    const filteredWorksByCategory = works.filter(work => work.category.name === category);
+    clearGallery();
+    displayWorks(filteredWorksByCategory);
+  });
+});
+
+
+// FONCTIONS
+
+// Fonction pour afficher les travaux
+function displayWorks(worksToDisplay) {
+
+  worksToDisplay.forEach(work => {
     // Création d'une balise dédiée à un travail
     const figure = document.createElement("figure");
     // Création des balises
@@ -26,37 +57,18 @@ function generateWorks(worksToDisplay) {
     // Attachement des autres balises à figure
     figure.appendChild(imageWork);
     figure.appendChild(titleWork);
-
-    // Récupération des catégories sans doublon
-    categories.add(work.category.name);
-  }
+  })
 }
 
-// Récupération de l'élément du DOM qui accueille les filtres
-const filters = document.querySelector(".filters");
-
-// Gestion du bouton "Tous"
-const allButton = document.createElement("button");
-allButton.innerText = "Tous";
-filters.appendChild(allButton);
-allButton.addEventListener("click", () => {
+// Fonction pour effacer la galerie
+function clearGallery() {
   document.querySelector(".gallery").innerHTML = "";
-  generateWorks(works);
-})
+}
 
-// Gestion des boutons en fonction des catégories
-categories.forEach ((category) => {
-  const categoryButton = document.createElement("button");
-  categoryButton.innerText = category;
-  filters.appendChild(categoryButton);
-  categoryButton.addEventListener("click", function() {
-    const filteredWorksByCategory = works.filter(function(work) {
-      return work.category.name === category;
-    })
-    document.querySelector(".gallery").innerHTML = "";
-    generateWorks(filteredWorksByCategory);
-  })
-  
-})
-
-
+// Fonction pour gérer l'état actif des boutons
+function activeButton(button) {
+  document.querySelectorAll(".filters button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+  button.classList.add("active");
+}
