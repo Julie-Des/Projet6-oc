@@ -141,6 +141,12 @@ li:hover {
 	font-family: 'Syne';
 	font-weight: 700;
 	padding: 5px 20px;
+	cursor: pointer;
+}
+
+.filters button:focus {
+	background-color: #1D6154;
+	color: rgb(255,255,255);
 
 }
 .gallery {
