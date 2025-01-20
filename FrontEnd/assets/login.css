@@ -52,7 +52,8 @@ body {
 	font-family: 'Work Sans';
 	font-size: 14px;
 	background-color: #FFFEF8;
-    height: 80vh;
+    min-height: calc(100vh - 50px);
+	position: relative;
 }
 
 header {
@@ -65,7 +66,7 @@ header {
 
 main {
 	margin:auto;
-    margin-bottom: 275px;
+	height: 100%;
 }
 
 h1 {
@@ -167,6 +168,15 @@ input[type="submit"]{
     font-size: 0.875em;
 }
 
+#login .error-message {
+	color: red;
+	margin-top: 10px;
+}
+
+#login .error-input {
+	border: 1px solid red;
+}
+
 footer {
 	background: #FFFFFF;
 	height: 4rem ;
@@ -174,6 +184,11 @@ footer {
 	flex-direction: row-reverse;
 	align-items: center;
 	justify-content: center;
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 100%;
 }
 
 footer nav ul {

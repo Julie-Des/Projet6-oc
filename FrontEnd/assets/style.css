@@ -54,6 +54,19 @@ body {
 	background-color: #FFFEF8;
 }
 
+.bandEdition {
+	width: 100%;
+	height: 4rem;
+	background-color: #000000;
+	color: #FFFFFF;
+	font-weight: 400;
+	font-size: 16px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+}
+
 header {
 	display: flex;
 	justify-content: space-between;
@@ -71,7 +84,7 @@ section {
 	margin: 50px 0;
 }
 
-h1{
+h1 {
 	display: flex;
 	flex-direction: column;
 	font-family: 'Syne';
@@ -88,12 +101,13 @@ h1 > span {
 	text-transform: uppercase;
 }
 
-h2{
+h2 {
 	font-family: 'Syne';
 	font-weight: 700;
 	font-size: 30px;
-	color: #1D6154
+	color: #1D6154;
 }
+
 nav ul {
 	display: flex;
 	align-items: center;
@@ -149,11 +163,28 @@ nav li a:hover {
 
 #portfolio {
 	margin-top: 100px;
+	position: relative;
 }
 
 #portfolio h2 {
 	text-align: center;
 	margin-bottom: 40px;
+}
+
+#portfolio .modifications {
+	display: flex;
+	align-items: center;
+	position: absolute;
+	top: 0;
+	right: 255px;
+	transform: translateY(50%);
+}
+
+#portfolio .modifications button {
+	border: none;
+	background-color: transparent;
+	cursor: pointer;
+	font-family: 'Work Sans';
 }
 
 .filters {
@@ -242,6 +273,7 @@ footer {
 	flex-direction: row-reverse;
 	align-items: center;
 	justify-content: center;
+	width: 100%;
 }
 
 footer nav ul {
