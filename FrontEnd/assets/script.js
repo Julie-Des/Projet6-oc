@@ -56,6 +56,11 @@ if (token) {
   // Logout dans la navbar
   const logout = document.querySelector(".logout");
   logout.innerText = "logout";
+  logout.addEventListener("click",(event)=> {
+    event.preventDefault();
+    window.localStorage.removeItem("token");
+    window.location.href = "./assets/login.html";
+  })
 
 
   // Icone pour modifier

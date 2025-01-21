@@ -16,9 +16,13 @@ function sendLogin() {
     });
 
     const statusResponse = response.status;
-    if (statusResponse === 401 || statusResponse === 404) {
+    if (statusResponse === 404) {
       MessageAndInputsError404();
-    } else {
+    } 
+    else if (statusResponse === 401) {
+      MessageAndInputError401();
+    }
+    else {
       const responseJson = await response.json();
       // Stockage du token dans le localStorage
       window.localStorage.setItem("token", responseJson.token);
@@ -35,7 +39,16 @@ function MessageAndInputsError404() {
   // Bordure rouge inputs
   const inputEmail = document.getElementById("email");
   const inputPassword = document.getElementById("password");
-
   inputEmail.classList.add("error-input");
   inputPassword.classList.add("error-input");
+}
+
+function MessageAndInputError401() {
+  // Message d'erreur
+  const errorMessage = document.querySelector(".error-message");
+  errorMessage.innerText = "Erreur dans le mot de passe";
+
+   // Bordure rouge input password
+   const inputPassword = document.getElementById("password");
+   inputPassword.classList.add("error-input");
 }
