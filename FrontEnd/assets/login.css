@@ -77,13 +77,14 @@ h1 {
 	font-weight: 800;
 	color: #B1663C;
     gap: 7px;
-    text-transform: uppercase;
+    
 }
 
 h1 > span {
 	font-family: 'Work Sans';
 	font-size:10px;
 	letter-spacing: 0.1em;
+	text-transform: uppercase;
 }
 
 h2 {
@@ -170,7 +171,8 @@ input[type="submit"]{
 
 #login .error-message {
 	color: red;
-	margin-top: 10px;
+	margin-bottom: 10px;
+	text-align: center;
 }
 
 #login .error-input {

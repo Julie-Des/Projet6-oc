@@ -54,7 +54,7 @@ body {
 	background-color: #FFFEF8;
 }
 
-.bandEdition {
+.bannerEdit {
 	width: 100%;
 	height: 4rem;
 	background-color: #000000;
@@ -171,7 +171,7 @@ nav li a:hover {
 	margin-bottom: 40px;
 }
 
-#portfolio .modifications {
+#portfolio .edits {
 	display: flex;
 	align-items: center;
 	position: absolute;
@@ -180,7 +180,7 @@ nav li a:hover {
 	transform: translateY(50%);
 }
 
-#portfolio .modifications button {
+#portfolio .edits button {
 	border: none;
 	background-color: transparent;
 	cursor: pointer;

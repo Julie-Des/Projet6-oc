@@ -42,29 +42,30 @@ categories.forEach(category => {
 const token = window.localStorage.getItem("token");
 if (token) {
   // Bande noire
-  const bandEditionContainer = document.querySelector(".bandEditionContaineur");
-  const bandEdition = document.createElement("div");
-  bandEdition.classList.add("bandEdition");
-  bandEditionContainer.appendChild(bandEdition);
-  const bandEditionIcon = document.createElement("img");
-  bandEditionIcon.src = "./assets/icons/pen-to-square.png";
-  bandEdition.appendChild(bandEditionIcon);
-  const bandEditionText = document.createElement("p");
-  bandEditionText.innerText = "Mode édition";
-  bandEdition.appendChild(bandEditionText);
+  const bannerEditContainer = document.querySelector(".banner-edit-containeur");
+  const bannerEdit = document.createElement("div");
+  bannerEdit.classList.add("bannerEdit");
+  bannerEditContainer.appendChild(bannerEdit);
+  const bannerEditIcon = document.createElement("img");
+  bannerEditIcon.src = "./assets/icons/pen-to-square.png";
+  bannerEdit.appendChild(bannerEditIcon);
+  const bannerEditText = document.createElement("p");
+  bannerEditText.innerText = "Mode édition";
+  bannerEdit.appendChild(bannerEditText);
 
   // Logout dans la navbar
   const logout = document.querySelector(".logout");
   logout.innerText = "logout";
 
+
   // Icone pour modifier
-  const modifications = document.querySelector(".modifications");
-  const modificationsIcon = document.createElement("img");
-  modificationsIcon.src = "./assets/icons/pen-to-square-black.png";
-  modifications.appendChild(modificationsIcon);
-  const modificationsText = document.createElement("button");
-  modificationsText.innerText = "modifier";
-  modifications.appendChild(modificationsText);
+  const edits = document.querySelector(".edits");
+  const editsIcon = document.createElement("img");
+  editsIcon.src = "./assets/icons/pen-to-square-black.png";
+  edits.appendChild(editsIcon);
+  const editsText = document.createElement("button");
+  editsText.innerText = "modifier";
+  edits.appendChild(editsText);
 }
 
 
@@ -72,7 +73,6 @@ if (token) {
 
 // Fonction pour afficher les travaux
 function displayWorks(worksToDisplay) {
-
   worksToDisplay.forEach(work => {
     // Création d'une balise dédiée à un travail
     const figure = document.createElement("figure");

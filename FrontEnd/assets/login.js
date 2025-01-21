@@ -5,10 +5,10 @@ function sendLogin() {
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const loginValues = {
-      email: event.target.querySelector("[name=email").value,
+      email: event.target.querySelector("[name=email]").value,
       password: event.target.querySelector("[name=password]").value,
     };
-    console.log(loginValues);
+    
     const response = await fetch("http://localhost:5678/api/users/login", {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -16,9 +16,8 @@ function sendLogin() {
     });
 
     const statusResponse = response.status;
-    console.log(statusResponse);
     if (statusResponse === 401 || statusResponse === 404) {
-      displayError();
+      MessageAndInputsError404();
     } else {
       const responseJson = await response.json();
       // Stockage du token dans le localStorage
@@ -28,13 +27,10 @@ function sendLogin() {
   });
 }
 
-function displayError() {
+function MessageAndInputsError404() {
   // Message d'erreur
-  const loginSection = document.getElementById("login");
-  const errorMessage = document.createElement("p");
-  errorMessage.classList.add("error-message");
-  errorMessage.textContent = "Erreur dans l’identifiant ou le mot de passe";
-  loginSection.appendChild(errorMessage);
+  const errorMessage = document.querySelector(".error-message");
+  errorMessage.innerText = "Erreur dans l’identifiant ou le mot de passe";
 
   // Bordure rouge inputs
   const inputEmail = document.getElementById("email");
