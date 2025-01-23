@@ -68,7 +68,7 @@ if (token) {
   const editsIcon = document.createElement("img");
   editsIcon.src = "./assets/icons/pen-to-square-black.png";
   edits.appendChild(editsIcon);
-  const editsText = document.createElement("button");
+  const editsText = document.createElement("a");
   editsText.innerText = "modifier";
   edits.appendChild(editsText);
 }

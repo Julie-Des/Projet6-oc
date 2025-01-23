@@ -175,15 +175,14 @@ nav li a:hover {
 #portfolio .edits {
 	display: flex;
 	align-items: center;
+	gap: 10px;
 	position: absolute;
 	top: 0;
-	right: 255px;
+	right: 260px;
 	transform: translateY(50%);
 }
 
-#portfolio .edits button {
-	border: none;
-	background-color: transparent;
+#portfolio .edits a {
 	cursor: pointer;
 	font-family: 'Work Sans';
 }
@@ -224,6 +223,69 @@ nav li a:hover {
 
 }
 
+#modal {
+	position: fixed;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.3);
+}
+
+#modal .modal-gallery {
+	background-color: #FFFFFF;
+	width: 420px;
+	max-width: calc(100vw - 50px);
+	border-radius: 10px;
+	padding: 60px 100px 40px;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+#modal .modal-gallery .close-cross-icon {
+	position: absolute;
+	right: 25px;
+	top: 25px;
+}
+
+#modal .modal-gallery h3 {
+	font-size: 26px;
+	font-weight: 400;
+}
+
+#modal .modal-gallery-photos {
+	padding-top: 50px;
+	padding-bottom: 65px;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+	grid-column-gap: 10px;
+	grid-row-gap: 10px;
+	border-bottom: 1px solid #B3B3B3;
+	margin-bottom: 40px;
+}
+
+#modal .modal-gallery-photos img {
+	width: 100%;
+}
+
+#modal .modal-gallery button {
+	border: solid 1px #1D6154;
+	background-color: #1D6154;
+	border-radius: 60px;
+	color: #FFFFFF;
+	font-family: 'Syne';
+	font-weight: 700;
+	padding: 9px 40px;
+	cursor: pointer;
+}
+
+
+
 #contact {
 	width: 50%;
 	margin: auto;
@@ -237,7 +299,7 @@ nav li a:hover {
 }
 #contact form {
 	text-align: left;
-	margin-top:30px;
+	margin-top: 30px;
 	display: flex;
 	flex-direction: column;
 }
@@ -261,15 +323,15 @@ input[type="submit"]{
 	font-weight: 700;
 	color: white;
 	background-color: #1D6154;
-	margin : 2em auto ;
+	margin : 2em auto;
 	width: 180px;
 	text-align: center;
-	border-radius: 60px ;
+	border-radius: 60px;
 }
 
 footer {
 	background: #FFFFFF;
-	height: 4rem ;
+	height: 4rem;
 	display: flex;
 	flex-direction: row-reverse;
 	align-items: center;
