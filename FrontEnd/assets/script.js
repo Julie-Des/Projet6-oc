@@ -71,6 +71,41 @@ if (token) {
   const editsText = document.createElement("a");
   editsText.innerText = "modifier";
   edits.appendChild(editsText);
+
+  // Ouverture de la modale
+  edits.addEventListener("click", (event) => {
+    event.preventDefault;
+    const modal = document.getElementById("modal");
+    modal.style.display = null;
+  })
+
+  // fermeture de la modale
+  const closeCross = document.querySelector(".close-cross");
+  closeCross.addEventListener("click", closeModal);
+
+  modal.addEventListener("click", closeModal);
+
+  const modalGallery = document.querySelector(".modal-gallery");
+    modalGallery.addEventListener("click", (event) => {
+      event.stopPropagation();
+    })
+
+  // Affichage des photos de la galerie
+    const modalGalleryPhotos = document.querySelector(".modal-gallery-photos");
+    works.forEach(work => {
+      const photoContaineur = document.createElement("div");
+      modalGalleryPhotos.appendChild(photoContaineur);
+      photoContaineur.classList.add("photo-containeur");
+      const photo = document.createElement("img");
+      photo.src = work.imageUrl;
+      photoContaineur.appendChild(photo);
+      photo.classList.add("photo-gallery")
+      const trashIcon = document.createElement("img");
+      trashIcon.src = "./assets/icons/trash.png";
+      photoContaineur.appendChild(trashIcon);
+      trashIcon.classList.add("trash-icon");
+    })
+    
 }
 
 
@@ -106,4 +141,9 @@ function activeButton(button) {
     btn.classList.remove("active");
   });
   button.classList.add("active");
+}
+
+// Fonction pour fermer la modale
+function closeModal() {
+  modal.style.display = "none";
 }

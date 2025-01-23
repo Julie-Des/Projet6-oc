@@ -269,9 +269,19 @@ nav li a:hover {
 	margin-bottom: 40px;
 }
 
-#modal .modal-gallery-photos img {
+#modal .modal-gallery-photos .photo-gallery {
 	width: 100%;
 }
+ 
+#modal .photo-containeur {
+	position: relative;
+}
+
+ #modal .trash-icon {
+	position: absolute;
+	top: 4px;
+	right: 4px;
+ }
 
 #modal .modal-gallery button {
 	border: solid 1px #1D6154;
