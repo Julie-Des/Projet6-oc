@@ -7,7 +7,7 @@ const gallery = document.querySelector(".gallery");
 // Récupération de l'élément du DOM qui accueille les filtres
 const filters = document.querySelector(".filters");
 // Récupération des catégories
-const categories = new Set(works.map(work => work.category.name));
+const categories = new Set(works.map((work) => work.category.name));
 
 displayWorks(works);
 
@@ -21,22 +21,23 @@ allButton.addEventListener("click", () => {
   clearGallery();
   activeButton(allButton);
   displayWorks(works);
-})
+});
 
 // Gestion des boutons en fonction des catégories
-categories.forEach(category => {
+categories.forEach((category) => {
   const categoryButton = document.createElement("button");
   categoryButton.innerText = category;
   filters.appendChild(categoryButton);
 
   categoryButton.addEventListener("click", () => {
     activeButton(categoryButton);
-    const filteredWorksByCategory = works.filter(work => work.category.name === category);
+    const filteredWorksByCategory = works.filter(
+      (work) => work.category.name === category
+    );
     clearGallery();
     displayWorks(filteredWorksByCategory);
   });
 });
-
 
 // Mode édition:
 const token = window.localStorage.getItem("token");
@@ -56,12 +57,11 @@ if (token) {
   // Logout dans la navbar
   const logout = document.querySelector(".logout");
   logout.innerText = "logout";
-  logout.addEventListener("click",(event)=> {
+  logout.addEventListener("click", (event) => {
     event.preventDefault();
     window.localStorage.removeItem("token");
     window.location.href = "./assets/login.html";
-  })
-
+  });
 
   // Icone pour modifier
   const edits = document.querySelector(".edits");
@@ -77,7 +77,7 @@ if (token) {
     event.preventDefault;
     const modal = document.getElementById("modal");
     modal.style.display = null;
-  })
+  });
 
   // fermeture de la modale
   const closeCross = document.querySelector(".close-cross");
@@ -86,36 +86,49 @@ if (token) {
   modal.addEventListener("click", closeModal);
 
   const modalGallery = document.querySelector(".modal-gallery");
-    modalGallery.addEventListener("click", (event) => {
-      event.stopPropagation();
-    })
+  modalGallery.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
 
   // Affichage des photos de la galerie
-    const modalGalleryPhotos = document.querySelector(".modal-gallery-photos");
-    works.forEach(work => {
-      const photoContaineur = document.createElement("div");
-      modalGalleryPhotos.appendChild(photoContaineur);
-      photoContaineur.classList.add("photo-containeur");
-      const photo = document.createElement("img");
-      photo.src = work.imageUrl;
-      photoContaineur.appendChild(photo);
-      photo.classList.add("photo-gallery")
-      const trashIcon = document.createElement("img");
-      trashIcon.src = "./assets/icons/trash.png";
-      photoContaineur.appendChild(trashIcon);
-      trashIcon.classList.add("trash-icon");
-    })
-    
-}
+  const modalGalleryPhotos = document.querySelector(".modal-gallery-photos");
+  works.forEach((work) => {
+    const photoContainer = document.createElement("div");
+    modalGalleryPhotos.appendChild(photoContainer);
+    photoContainer.classList.add("photo-containeur");
+    const photo = document.createElement("img");
+    photo.src = work.imageUrl;
+    photoContainer.appendChild(photo);
+    photo.classList.add("photo-gallery");
+    const trashIcon = document.createElement("img");
+    trashIcon.src = "./assets/icons/trash.png";
+    photoContainer.appendChild(trashIcon);
+    trashIcon.classList.add("trash-icon");
 
+    // Suppression d'un travail
+    trashIcon.addEventListener("click", async () => {
+      const response = await fetch(`http://localhost:5678/api/works/${work.id}`, {
+        method: "delete",
+        headers: { Authorization: `Bearer ${token}`},
+      });
+      const statusResponse = response.status 
+      if(statusResponse === 204) {
+        photoContainer.remove();
+        document.getElementById(work.id).remove();
+      }
+    });
+  });
+}
 
 // FONCTIONS
 
 // Fonction pour afficher les travaux
 function displayWorks(worksToDisplay) {
-  worksToDisplay.forEach(work => {
+  worksToDisplay.forEach((work) => {
     // Création d'une balise dédiée à un travail
     const figure = document.createElement("figure");
+    // Ajout d'un id à chaque figure
+    figure.id = work.id;
     // Création des balises
     const imageWork = document.createElement("img");
     imageWork.src = work.imageUrl;
@@ -127,7 +140,7 @@ function displayWorks(worksToDisplay) {
     // Attachement des autres balises à figure
     figure.appendChild(imageWork);
     figure.appendChild(titleWork);
-  })
+  });
 }
 
 // Fonction pour effacer la galerie
@@ -137,7 +150,7 @@ function clearGallery() {
 
 // Fonction pour gérer l'état actif des boutons
 function activeButton(button) {
-  document.querySelectorAll(".filters button").forEach(btn => {
+  document.querySelectorAll(".filters button").forEach((btn) => {
     btn.classList.remove("active");
   });
   button.classList.add("active");

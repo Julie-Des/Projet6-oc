@@ -17,10 +17,10 @@ function sendLogin() {
 
     const statusResponse = response.status;
     if (statusResponse === 404) {
-      MessageAndInputsError404();
+      messageAndInputsError404();
     } 
     else if (statusResponse === 401) {
-      MessageAndInputError401();
+      messageAndInputError401();
     }
     else {
       const responseJson = await response.json();
@@ -31,7 +31,7 @@ function sendLogin() {
   });
 }
 
-function MessageAndInputsError404() {
+function messageAndInputsError404() {
   // Message d'erreur
   const errorMessage = document.querySelector(".error-message");
   errorMessage.innerText = "Erreur dans l’identifiant ou le mot de passe";
@@ -43,7 +43,7 @@ function MessageAndInputsError404() {
   inputPassword.classList.add("error-input");
 }
 
-function MessageAndInputError401() {
+function messageAndInputError401() {
   // Message d'erreur
   const errorMessage = document.querySelector(".error-message");
   errorMessage.innerText = "Erreur dans le mot de passe";
