@@ -234,9 +234,10 @@ nav li a:hover {
 	width: 100%;
 	height: 100%;
 	background-color: rgba(0, 0, 0, 0.3);
+	display: none;
 }
 
-#modal .modal-gallery {
+#modal .modal-window {
 	background-color: #FFFFFF;
 	width: 420px;
 	max-width: calc(100vw - 50px);
@@ -248,13 +249,20 @@ nav li a:hover {
 	align-items: center;
 }
 
-#modal .modal-gallery .close-cross-icon {
+#modal .modal-gallery {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+#modal .close-cross-icon {
 	position: absolute;
 	right: 25px;
 	top: 25px;
 }
 
-#modal .modal-gallery h3 {
+#modal h3 {
 	font-size: 26px;
 	font-weight: 400;
 }
@@ -278,7 +286,7 @@ nav li a:hover {
 	position: relative;
 }
 
- #modal .trash-icon {
+#modal .trash-icon {
 	position: absolute;
 	top: 4px;
 	right: 4px;
@@ -293,6 +301,48 @@ nav li a:hover {
 	font-weight: 700;
 	padding: 9px 40px;
 	cursor: pointer;
+}
+
+#modal .arrow-left {
+	position: absolute;
+	top: 25px;
+	left: 25px;
+}
+
+#modal .modal-add-photo {
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+#modal .add-photo-container {
+	background-color: #E8F1F6;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 20px 0;
+	gap: 7px;
+	margin-top: 40px;
+}
+
+#modal .visually-hidden {
+	height: 0px;
+	width: 0px;
+}
+
+#modal .visually-hidden + label {
+	background-color: #CBD6DC;
+	border-radius: 50px;
+	padding: 12px 30px;
+	color: #306685;
+}
+
+#modal .add-photo-container p {
+	color: #444444;
+	font-size: 10px;
 }
 
 

@@ -73,20 +73,27 @@ if (token) {
   edits.appendChild(editsText);
 
   // Ouverture de la modale
+  const modalGallery = document.querySelector(".modal-gallery");
   edits.addEventListener("click", (event) => {
     event.preventDefault;
     const modal = document.getElementById("modal");
-    modal.style.display = null;
+    modal.style.display = "flex";
+    modalGallery.style.display = "flex";
+    const modalAddPhoto = document.querySelector(".modal-add-photo");
+    modalAddPhoto.style.display = "none";
+    
   });
 
   // fermeture de la modale
-  const closeCross = document.querySelector(".close-cross");
-  closeCross.addEventListener("click", closeModal);
-
+  const closeCrosses = document.querySelectorAll(".close-cross");
+  closeCrosses.forEach((closeCross) => closeCross.addEventListener("click", closeModal));
   modal.addEventListener("click", closeModal);
-
-  const modalGallery = document.querySelector(".modal-gallery");
+  
   modalGallery.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+  const modalAddPhoto = document.querySelector(".modal-add-photo");
+  modalAddPhoto.addEventListener("click", (event) => {
     event.stopPropagation();
   });
 
@@ -118,6 +125,14 @@ if (token) {
       }
     });
   });
+  // Ajouter un travail
+  const addPhotoButton = document.querySelector(".add-photo-button");
+  addPhotoButton.addEventListener("click", () => {
+    modalGallery.style.display = "none";
+    const modalAddPhoto = document.querySelector(".modal-add-photo");
+    modalAddPhoto.style.display = "flex";
+  })
+
 }
 
 // FONCTIONS
