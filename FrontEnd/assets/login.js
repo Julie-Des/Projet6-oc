@@ -31,11 +31,12 @@ function sendLogin() {
   });
 }
 
+// FONCTIONS
+
 function messageAndInputsError404() {
   // Message d'erreur
   const errorMessage = document.querySelector(".error-message");
   errorMessage.innerText = "Erreur dans l’identifiant ou le mot de passe";
-
   // Bordure rouge inputs
   const inputEmail = document.getElementById("email");
   const inputPassword = document.getElementById("password");
@@ -47,7 +48,6 @@ function messageAndInputError401() {
   // Message d'erreur
   const errorMessage = document.querySelector(".error-message");
   errorMessage.innerText = "Erreur dans le mot de passe";
-
    // Bordure rouge input password
    const inputPassword = document.getElementById("password");
    inputPassword.classList.add("error-input");
