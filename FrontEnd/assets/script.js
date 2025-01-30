@@ -121,9 +121,20 @@ if (token) {
 
   // Ouverture modale "Ajout photo"
   const addPhotoButton = document.querySelector(".add-photo-button");
-  addPhotoButton.addEventListener("click", () => {
+  addPhotoButton.addEventListener("click", async () => {
     modalGallery.style.display = "none";
     modalAddPhoto.style.display = "flex";
+    // Liste de catégories
+    const selectCategory = document.getElementById("category");
+    const response = await fetch("http://localhost:5678/api/categories");
+    const categories = await response.json();
+    selectCategory.innerHTML = '<option value="">';
+    categories.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category.id;
+      option.textContent = category.name;
+      selectCategory.appendChild(option);
+    })
   });
 
   // Retour en arrière vers modale Galerie photo
@@ -151,9 +162,12 @@ if (token) {
   });
 
   // Récupération des catégories
-  const responseCategories = await fetch("http://localhost:5678/api/categories");
-  const arrayCategories = await responseCategories.json();
-  console.log(responseCategories);
+
+
+  
+
+  
+
   
 }
 
