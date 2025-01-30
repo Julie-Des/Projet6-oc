@@ -31,9 +31,7 @@ categories.forEach((category) => {
 
   categoryButton.addEventListener("click", () => {
     activeButton(categoryButton);
-    const filteredWorksByCategory = works.filter(
-      (work) => work.category.name === category
-    );
+    const filteredWorksByCategory = works.filter((work) => work.category.name === category);
     clearGallery();
     displayWorks(filteredWorksByCategory);
   });
@@ -111,29 +109,52 @@ if (token) {
     trashIcon.addEventListener("click", async () => {
       const response = await fetch(`http://localhost:5678/api/works/${work.id}`, {
         method: "delete",
-        headers: { Authorization: `Bearer ${token}`},
+        headers: { Authorization: `Bearer ${token}` },
       });
-      const statusResponse = response.status 
-      if(statusResponse === 204) {
+      const statusResponse = response.status;
+      if (statusResponse === 204) {
         photoContainer.remove();
         document.getElementById(work.id).remove();
       }
     });
   });
 
-  // Ajout d'un travail
+  // Ouverture modale "Ajout photo"
   const addPhotoButton = document.querySelector(".add-photo-button");
   addPhotoButton.addEventListener("click", () => {
     modalGallery.style.display = "none";
     modalAddPhoto.style.display = "flex";
-  })
+  });
 
-  // Retour en arrière
+  // Retour en arrière vers modale Galerie photo
   const arrowLeft = document.querySelector(".arrow-left");
   arrowLeft.addEventListener("click", () => {
     modalGallery.style.display = "flex";
     modalAddPhoto.style.display = "none";
-  })
+  });
+
+  // Transfert d'une image
+  const dropZone = document.querySelector(".add-photo-container");
+  // En cliquant sur l'input
+  const uploadInput = document.getElementById("fileElem");
+    uploadInput.addEventListener("change", () => {
+      transferPhoto(uploadInput);
+    });
+  // Drag and drop 
+  dropZone.addEventListener("dragover", (event) => {
+    event.preventDefault();
+  });
+  dropZone.addEventListener("drop", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    transferPhoto(event.dataTransfer);
+  });
+
+  // Récupération des catégories
+  const responseCategories = await fetch("http://localhost:5678/api/categories");
+  const arrayCategories = await responseCategories.json();
+  console.log(responseCategories);
+  
 }
 
 // FONCTIONS
@@ -164,7 +185,7 @@ function clearGallery() {
   document.querySelector(".gallery").innerHTML = "";
 }
 
-// Fonction pour gérer l'état actif des boutons
+// Fonction pour gérer l'état actif des boutons de filtres
 function activeButton(button) {
   document.querySelectorAll(".filters button").forEach((btn) => {
     btn.classList.remove("active");
@@ -176,3 +197,43 @@ function activeButton(button) {
 function closeModal() {
   modal.style.display = "none";
 }
+
+// Fonction pour transférer une photo
+function transferPhoto(typeOfUpload) {
+  const dropZone = document.querySelector(".add-photo-container");
+  const errorMessage = document.querySelector(".error-message");
+  const maxFileSize = 4 * 1024 * 1024;
+  const allowedFileTypes = ["image/jpeg", "image/png"];
+  let uploadedFile = null;
+  const files = typeOfUpload.files;
+  if (files.length > 0) {
+    const file = files[0];
+
+    if (!allowedFileTypes.includes(file.type)) {
+      errorMessage.innerText = "Seuls les formats JPG et PNG sont acceptés";
+      uploadedFile = null;
+      return;
+    }
+
+    if (file.size > maxFileSize) {
+      errorMessage.innerText = "La taille de l'image ne doit pas dépasser 4 Mo";
+      uploadedFile = null;
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      dropZone.innerHTML = `<img src="${e.target.result}" class="photo-preview">`;
+    };
+    reader.readAsDataURL(file);
+    uploadedFile = file;
+  }
+}
+
+// Fonction pour valider le titre
+// function validateTitle(newPhotoTitle) {
+//   const newPhotoTitle = document.getElementById("title");
+//   if (newPhotoTitle.length >= 2) {
+//     return true
+//   }
+//   return false
+// }
