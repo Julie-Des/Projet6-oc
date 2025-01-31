@@ -388,7 +388,7 @@ nav li a:hover {
 	font-size: 14px;
 }
 
-#modal .modal-add-photo button {
+#modal .validate-btn {
 	border: solid 1px #A7A7A7;
 	background-color: #A7A7A7;
 	border-radius: 60px;
@@ -396,10 +396,18 @@ nav li a:hover {
 	font-family: 'Syne';
 	font-weight: 700;
 	padding: 9px 40px;
-	cursor: pointer;
 	width: 50%;
 	margin: 0 auto 10px;
+	cursor: not-allowed;
 }
+
+#modal .validate-btn.active {
+	border: solid 1px #1D6154;
+	background-color: #1D6154;
+	cursor: pointer;
+}
+
+
 
 #contact {
 	width: 50%;

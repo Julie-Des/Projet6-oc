@@ -121,11 +121,12 @@ if (token) {
 
   // Ouverture modale "Ajout photo"
   const addPhotoButton = document.querySelector(".add-photo-button");
+  const selectCategory = document.getElementById("category");
   addPhotoButton.addEventListener("click", async () => {
     modalGallery.style.display = "none";
     modalAddPhoto.style.display = "flex";
+
     // Liste de catégories
-    const selectCategory = document.getElementById("category");
     const response = await fetch("http://localhost:5678/api/categories");
     const categories = await response.json();
     selectCategory.innerHTML = '<option value="">';
@@ -135,6 +136,8 @@ if (token) {
       option.textContent = category.name;
       selectCategory.appendChild(option);
     })
+
+    addValidationListeners();
   });
 
   // Retour en arrière vers modale Galerie photo
@@ -147,9 +150,10 @@ if (token) {
   // Transfert d'une image
   const dropZone = document.querySelector(".add-photo-container");
   // En cliquant sur l'input
-  const uploadInput = document.getElementById("fileElem");
-    uploadInput.addEventListener("change", () => {
-      transferPhoto(uploadInput);
+  const fileInput = document.getElementById("fileElem");
+    fileInput.addEventListener("change", () => {
+      transferPhoto(fileInput);
+      validateForm();
     });
   // Drag and drop 
   dropZone.addEventListener("dragover", (event) => {
@@ -160,15 +164,6 @@ if (token) {
     event.stopPropagation();
     transferPhoto(event.dataTransfer);
   });
-
-  // Récupération des catégories
-
-
-  
-
-  
-
-  
 }
 
 // FONCTIONS
@@ -243,11 +238,26 @@ function transferPhoto(typeOfUpload) {
   }
 }
 
-// Fonction pour valider le titre
-// function validateTitle(newPhotoTitle) {
-//   const newPhotoTitle = document.getElementById("title");
-//   if (newPhotoTitle.length >= 2) {
-//     return true
-//   }
-//   return false
-// }
+// Fonction pour valider le formulaire
+function addValidationListeners() {
+  const fileInput = document.getElementById("fileElem");
+  const titleInput = document.getElementById("title");
+  const categorySelect = document.getElementById("category");
+  const validateButton = document.querySelector(".validate-btn");
+
+  function validateForm() {
+      const FileInputValid = fileInput.files.length > 0;
+      const titleInputValid = titleInput.value.trim().length > 2;
+      const categorySelected = categorySelect.value !== "";
+
+      if (FileInputValid && titleInputValid && categorySelected) {
+          validateButton.classList.add("active");
+      } else {
+          validateButton.classList.remove("active");
+      }
+  }
+
+  fileInput.addEventListener("change", validateForm);
+  titleInput.addEventListener("input", validateForm);
+  categorySelect.addEventListener("change", validateForm);
+}
