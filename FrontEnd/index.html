@@ -76,17 +76,20 @@
               ><img src="./assets/icons/close-cross.png" alt="croix pour fermer" class="close-cross-icon"
             /></a>
             <h3>Ajout photo</h3>
-            <form action="#">
+            <form action="#" class="add-photo-form">
               <div class="add-photo-container">
-                <img src="./assets/icons/picture-icon.png" alt="Icone photo" />
-                <input type="file" id="fileElem" multiple accept="image/*" class="visually-hidden" />
-                <label for="fileElem">+ Ajouter photo</label>
-                <p>jpg, png: 4mo max</p>
-                <p class="error-message"></p>
+                <div class="dropzone-empty">
+                  <img src="./assets/icons/picture-icon.png" alt="Icone photo" />
+                  <input type="file" id="fileElem" multiple accept="image/*" class="visually-hidden" />
+                  <label for="fileElem">+ Ajouter photo</label>
+                  <p>jpg, png: 4mo max</p>
+                  <p class="error-message"></p>
+                </div>
+                <div class="dropzone-full"></div>
               </div>
               <div class="inputs-title-and-category">
                 <label for="title" class="title-label">Titre</label>
-                <input type="text" name="title" id="title" required>
+                <input type="text" name="title" id="title" required />
                 <label for="category" class="category-label">Catégorie</label>
                 <select name="category" id="category" required></select>
               </div>

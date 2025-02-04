@@ -1,58 +1,19 @@
-// Récupération des travaux depuis l'API
-const response = await fetch("http://localhost:5678/api/works");
-const works = await response.json();
+main();
 
-// Récupération de l'élément du DOM qui accueille la galerie
-const gallery = document.querySelector(".gallery");
-// Récupération de l'élément du DOM qui accueille les filtres
-const filters = document.querySelector(".filters");
-// Récupération des catégories
-const categories = new Set(works.map((work) => work.category.name));
-
-displayWorks(works);
-
-// Gestion du bouton "Tous"
-const allButton = document.createElement("button");
-allButton.innerText = "Tous";
-allButton.classList.add("active");
-filters.appendChild(allButton);
-
-allButton.addEventListener("click", () => {
-  clearGallery();
-  activeButton(allButton);
+async function main() {
+  const works = await getWorks();
   displayWorks(works);
-});
+  addCategoryButtons(works);
+  const token = window.localStorage.getItem("token");
+  if (token) {
+    // Bande noire
+    switchToEditMode(works);
+    // Logout dans la navbar
+    displayLogoutButton();
+  }
+}
 
-// Gestion des boutons en fonction des catégories
-categories.forEach((category) => {
-  const categoryButton = document.createElement("button");
-  categoryButton.innerText = category;
-  filters.appendChild(categoryButton);
-
-  categoryButton.addEventListener("click", () => {
-    activeButton(categoryButton);
-    const filteredWorksByCategory = works.filter((work) => work.category.name === category);
-    clearGallery();
-    displayWorks(filteredWorksByCategory);
-  });
-});
-
-// Mode édition:
-const token = window.localStorage.getItem("token");
-if (token) {
-  // Bande noire
-  const bannerEditContainer = document.querySelector(".banner-edit-containeur");
-  const bannerEdit = document.createElement("div");
-  bannerEdit.classList.add("bannerEdit");
-  bannerEditContainer.appendChild(bannerEdit);
-  const bannerEditIcon = document.createElement("img");
-  bannerEditIcon.src = "./assets/icons/pen-to-square.png";
-  bannerEdit.appendChild(bannerEditIcon);
-  const bannerEditText = document.createElement("p");
-  bannerEditText.innerText = "Mode édition";
-  bannerEdit.appendChild(bannerEditText);
-
-  // Logout dans la navbar
+function displayLogoutButton() {
   const logout = document.querySelector(".logout");
   logout.innerText = "logout";
   logout.addEventListener("click", (event) => {
@@ -60,37 +21,102 @@ if (token) {
     window.localStorage.removeItem("token");
     window.location.href = "./assets/login.html";
   });
+}
 
-  // Icone pour modifier
-  const edits = document.querySelector(".edits");
-  const editsIcon = document.createElement("img");
-  editsIcon.src = "./assets/icons/pen-to-square-black.png";
-  edits.appendChild(editsIcon);
-  const editsText = document.createElement("a");
-  editsText.innerText = "modifier";
-  edits.appendChild(editsText);
+function switchToEditMode(works) {
+  displayEditBanner();
+  displayEditButton();
+  handleModalClosing();
+  handleModalPhotoGallery(works);
+  createDropZone();
+  handleWorkCreation(works);
+}
 
-  // Ouverture de la modale
-  const modal = document.getElementById("modal");
+function handleWorkCreation(works) {
+  const fileInput = document.getElementById("fileElem");
+  const form = document.querySelector(".add-photo-form");
+  const dropZoneEmpty = document.querySelector(".dropzone-empty");
+  const dropZoneFull = document.querySelector(".dropzone-full");
+  const titleInput = document.getElementById("title");
+  const categorySelect = document.getElementById("category");
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const formData = new FormData();
+    formData.append("image", fileInput.files[0]);
+    formData.append("title", titleInput.value);
+    formData.append("category", categorySelect.value);
+
+    try {
+      // Envoi des données à l'API
+      const token = window.localStorage.getItem("token");
+      const response = await fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'envoi de l'image.");
+      }
+
+      const result = await response.json();
+      alert("Image ajoutée avec succès !");
+
+      works.push(result);
+      clearGallery();
+      clearGalleryOfModal();
+      handleModalPhotoGallery(works);
+      displayWorks(works);
+      form.reset();
+      validateForm();
+      dropZoneEmpty.style.display = "flex";
+      dropZoneFull.style.display = "none";
+    } catch (error) {
+      console.error("Erreur :", error);
+      alert("Une erreur est survenue lors de l'envoi.");
+    }
+  });
+}
+
+function createDropZone() {
+  const addPhotoButton = document.querySelector(".add-photo-button");
+  const dropzoneFull = document.querySelector(".dropzone-full");
   const modalGallery = document.querySelector(".modal-gallery");
   const modalAddPhoto = document.querySelector(".modal-add-photo");
-  edits.addEventListener("click", (event) => {
-    event.preventDefault;
-    modal.style.display = "flex";
+  const dropZoneEmpty = document.querySelector(".dropzone-empty");
+  addPhotoButton.addEventListener("click", async () => {
+    modalGallery.style.display = "none";
+    modalAddPhoto.style.display = "flex";
+    dropzoneFull.style.display = "none";
+    dropZoneEmpty.style.display = "flex";
+    addValidationListeners();
+  });
+
+  // Retour en arrière vers modale Galerie photo
+  const arrowLeft = document.querySelector(".arrow-left");
+  arrowLeft.addEventListener("click", () => {
     modalGallery.style.display = "flex";
     modalAddPhoto.style.display = "none";
   });
 
-  // fermeture de la modale
-  const closeCrosses = document.querySelectorAll(".close-cross");
-  closeCrosses.forEach((closeCross) => closeCross.addEventListener("click", closeModal));
-  modal.addEventListener("click", closeModal);
-  const modalWindow = document.querySelector(".modal-window");
-  modalWindow.addEventListener("click", (event) => {
-    event.stopPropagation();
+  // Transfert d'une image
+  // En cliquant sur l'input
+  const fileInput = document.getElementById("fileElem");
+  fileInput.addEventListener("change", () => {
+    transferPhoto(fileInput);
   });
+  // Drag and drop
+  dropZoneEmpty.addEventListener("dragover", (event) => {
+    event.preventDefault();
+  });
+  dropZoneEmpty.addEventListener("drop", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    transferPhoto(event.dataTransfer);
+  });
+}
 
-  // Affichage des photos de la galerie
+function handleModalPhotoGallery(works) {
   const modalGalleryPhotos = document.querySelector(".modal-gallery-photos");
   works.forEach((work) => {
     const photoContainer = document.createElement("div");
@@ -107,6 +133,7 @@ if (token) {
 
     // Suppression d'un travail
     trashIcon.addEventListener("click", async () => {
+      const token = window.localStorage.getItem("token");
       const response = await fetch(`http://localhost:5678/api/works/${work.id}`, {
         method: "delete",
         headers: { Authorization: `Bearer ${token}` },
@@ -118,15 +145,36 @@ if (token) {
       }
     });
   });
+}
 
-  // Ouverture modale "Ajout photo"
-  const addPhotoButton = document.querySelector(".add-photo-button");
-  const selectCategory = document.getElementById("category");
-  addPhotoButton.addEventListener("click", async () => {
-    modalGallery.style.display = "none";
-    modalAddPhoto.style.display = "flex";
+function handleModalClosing() {
+  const closeCrosses = document.querySelectorAll(".close-cross");
+  closeCrosses.forEach((closeCross) => closeCross.addEventListener("click", closeModal));
+  modal.addEventListener("click", closeModal);
+  const modalWindow = document.querySelector(".modal-window");
+  modalWindow.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+}
 
-    // Liste de catégories
+function displayEditButton() {
+  const edits = document.querySelector(".edits");
+  const editsIcon = document.createElement("img");
+  editsIcon.src = "./assets/icons/pen-to-square-black.png";
+  edits.appendChild(editsIcon);
+  const editsText = document.createElement("a");
+  editsText.innerText = "modifier";
+  edits.appendChild(editsText);
+  const modal = document.getElementById("modal");
+  const modalGallery = document.querySelector(".modal-gallery");
+  const modalAddPhoto = document.querySelector(".modal-add-photo");
+  edits.addEventListener("click", async (event) => {
+    event.preventDefault;
+    modal.style.display = "flex";
+    modalGallery.style.display = "flex";
+    modalAddPhoto.style.display = "none";
+    // Liste des catégories
+    const selectCategory = document.getElementById("category");
     const response = await fetch("http://localhost:5678/api/categories");
     const categories = await response.json();
     selectCategory.innerHTML = '<option value="">';
@@ -135,41 +183,62 @@ if (token) {
       option.value = category.id;
       option.textContent = category.name;
       selectCategory.appendChild(option);
-    })
-
-    addValidationListeners();
-  });
-
-  // Retour en arrière vers modale Galerie photo
-  const arrowLeft = document.querySelector(".arrow-left");
-  arrowLeft.addEventListener("click", () => {
-    modalGallery.style.display = "flex";
-    modalAddPhoto.style.display = "none";
-  });
-
-  // Transfert d'une image
-  const dropZone = document.querySelector(".add-photo-container");
-  // En cliquant sur l'input
-  const fileInput = document.getElementById("fileElem");
-    fileInput.addEventListener("change", () => {
-      transferPhoto(fileInput);
-      validateForm();
     });
-  // Drag and drop 
-  dropZone.addEventListener("dragover", (event) => {
-    event.preventDefault();
-  });
-  dropZone.addEventListener("drop", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    transferPhoto(event.dataTransfer);
   });
 }
 
-// FONCTIONS
+function displayEditBanner() {
+  const bannerEditContainer = document.querySelector(".banner-edit-containeur");
+  const bannerEdit = document.createElement("div");
+  bannerEdit.classList.add("bannerEdit");
+  bannerEditContainer.appendChild(bannerEdit);
+  const bannerEditIcon = document.createElement("img");
+  bannerEditIcon.src = "./assets/icons/pen-to-square.png";
+  bannerEdit.appendChild(bannerEditIcon);
+  const bannerEditText = document.createElement("p");
+  bannerEditText.innerText = "Mode édition";
+  bannerEdit.appendChild(bannerEditText);
+}
+
+async function getWorks() {
+  const response = await fetch("http://localhost:5678/api/works");
+  const works = await response.json();
+  return works;
+}
+
+function addCategoryButtons(works) {
+  const filters = document.querySelector(".filters");
+  // Gestion du bouton "Tous"
+  const allButton = document.createElement("button");
+  allButton.innerText = "Tous";
+  allButton.classList.add("active");
+  filters.appendChild(allButton);
+
+  allButton.addEventListener("click", () => {
+    clearGallery();
+    activeButton(allButton);
+    displayWorks(works);
+  });
+  const categories = new Set(works.map((work) => work.category.name));
+  // Gestion des boutons en fonction des catégories
+  categories.forEach((category) => {
+    const categoryButton = document.createElement("button");
+    categoryButton.innerText = category;
+    filters.appendChild(categoryButton);
+
+    categoryButton.addEventListener("click", () => {
+      activeButton(categoryButton);
+      const filteredWorksByCategory = works.filter((work) => work.category.name === category);
+      clearGallery();
+      displayWorks(filteredWorksByCategory);
+    });
+  });
+}
 
 // Fonction pour afficher les travaux
 function displayWorks(worksToDisplay) {
+  // Récupération de l'élément du DOM qui accueille la galerie
+  const gallery = document.querySelector(".gallery");
   worksToDisplay.forEach((work) => {
     // Création d'une balise dédiée à un travail
     const figure = document.createElement("figure");
@@ -194,6 +263,11 @@ function clearGallery() {
   document.querySelector(".gallery").innerHTML = "";
 }
 
+// Fonction pour effacer la galerie de la modale
+function clearGalleryOfModal() {
+  document.querySelector(".modal-gallery-photos").innerHTML = "";
+}
+
 // Fonction pour gérer l'état actif des boutons de filtres
 function activeButton(button) {
   document.querySelectorAll(".filters button").forEach((btn) => {
@@ -209,7 +283,8 @@ function closeModal() {
 
 // Fonction pour transférer une photo
 function transferPhoto(typeOfUpload) {
-  const dropZone = document.querySelector(".add-photo-container");
+  const dropZoneFull = document.querySelector(".dropzone-full");
+  const dropZoneEmpty = document.querySelector(".dropzone-empty");
   const errorMessage = document.querySelector(".error-message");
   const maxFileSize = 4 * 1024 * 1024;
   const allowedFileTypes = ["image/jpeg", "image/png"];
@@ -231,31 +306,36 @@ function transferPhoto(typeOfUpload) {
     }
     const reader = new FileReader();
     reader.onload = (e) => {
-      dropZone.innerHTML = `<img src="${e.target.result}" class="photo-preview">`;
+      dropZoneEmpty.style.display = "none";
+      dropZoneFull.style.display = "flex";
+      dropZoneFull.innerHTML = `<img src="${e.target.result}" class="photo-preview">`;
     };
     reader.readAsDataURL(file);
     uploadedFile = file;
   }
 }
 
-// Fonction pour valider le formulaire
-function addValidationListeners() {
+function validateForm() {
   const fileInput = document.getElementById("fileElem");
   const titleInput = document.getElementById("title");
   const categorySelect = document.getElementById("category");
   const validateButton = document.querySelector(".validate-btn");
 
-  function validateForm() {
-      const FileInputValid = fileInput.files.length > 0;
-      const titleInputValid = titleInput.value.trim().length > 2;
-      const categorySelected = categorySelect.value !== "";
+  const FileInputIsValid = fileInput.files.length > 0;
+  const titleInputIsValid = titleInput.value.trim().length > 2;
+  const categoryIsSelected = categorySelect.value !== "";
 
-      if (FileInputValid && titleInputValid && categorySelected) {
-          validateButton.classList.add("active");
-      } else {
-          validateButton.classList.remove("active");
-      }
+  if (FileInputIsValid && titleInputIsValid && categoryIsSelected) {
+    validateButton.classList.add("active");
+  } else {
+    validateButton.classList.remove("active");
   }
+}
+
+function addValidationListeners() {
+  const fileInput = document.getElementById("fileElem");
+  const titleInput = document.getElementById("title");
+  const categorySelect = document.getElementById("category");
 
   fileInput.addEventListener("change", validateForm);
   titleInput.addEventListener("input", validateForm);

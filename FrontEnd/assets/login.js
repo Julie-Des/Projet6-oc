@@ -31,8 +31,6 @@ function sendLogin() {
   });
 }
 
-// FONCTIONS
-
 function messageAndInputsError404() {
   // Message d'erreur
   const errorMessage = document.querySelector(".error-message");
