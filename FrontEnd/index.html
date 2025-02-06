@@ -80,7 +80,7 @@
               <div class="add-photo-container">
                 <div class="dropzone-empty">
                   <img src="./assets/icons/picture-icon.png" alt="Icone photo" />
-                  <input type="file" id="fileElem" multiple accept="image/*" class="visually-hidden" />
+                  <input type="file" id="fileElem" multiple accept="image/*" class="visually-hidden" required/>
                   <label for="fileElem">+ Ajouter photo</label>
                   <p>jpg, png: 4mo max</p>
                   <p class="error-message"></p>
@@ -89,11 +89,13 @@
               </div>
               <div class="inputs-title-and-category">
                 <label for="title" class="title-label">Titre</label>
-                <input type="text" name="title" id="title" required />
+                <input type="text" name="title" id="title"/>
+                <p class="message-input-title"></p>
                 <label for="category" class="category-label">Catégorie</label>
-                <select name="category" id="category" required></select>
+                <select name="category" id="category"></select>
               </div>
               <button type="submit" class="validate-btn">Valider</button>
+              <p class="message"></p>
             </form>
           </div>
         </div>
