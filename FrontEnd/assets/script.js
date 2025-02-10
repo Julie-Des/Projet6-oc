@@ -34,7 +34,6 @@ function displayWorks(worksToDisplay) {
   const gallery = document.querySelector(".gallery");
   worksToDisplay.forEach((work) => {
     const figure = document.createElement("figure");
-    // Ajout d'un id à chaque figure
     figure.id = work.id;
     const imageWork = document.createElement("img");
     imageWork.src = work.imageUrl;
