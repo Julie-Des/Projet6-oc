@@ -22,7 +22,6 @@ function switchToEditMode() {
   handleWorkCreation();
 }
 
-
 // FONCTIONS
 
 async function getWorks() {
@@ -50,6 +49,7 @@ function displayWorks(worksToDisplay) {
 
 function addCategoryButtons() {
   const filters = document.querySelector(".filters");
+  filters.innerHTML = "";
   // "All" button
   const allButton = document.createElement("button");
   allButton.innerText = "Tous";
@@ -71,7 +71,7 @@ function addCategoryButtons() {
 
     categoryButton.addEventListener("click", () => {
       activeFiltersButton(categoryButton);
-      const filteredWorksByCategory = works.filter(work => work.category.name === category);
+      const filteredWorksByCategory = works.filter((work) => work.category.name === category);
       clearGallery();
       displayWorks(filteredWorksByCategory);
     });
@@ -131,14 +131,18 @@ function displayEditButton() {
 
 function handleModalClosing() {
   const closeCrosses = document.querySelectorAll(".close-cross");
-  closeCrosses.forEach((closeCross) => closeCross.addEventListener("click", () => {
-    closeModal();
-    clearSuccessMessage();
-  }));
+  closeCrosses.forEach((closeCross) =>
+    closeCross.addEventListener("click", () => {
+      closeModal();
+      clearSuccessMessage();
+      clearForm();
+    })
+  );
 
   modal.addEventListener("click", () => {
     closeModal();
     clearSuccessMessage();
+    clearForm();
   });
 
   const modalWindow = document.querySelector(".modal-window");
@@ -149,6 +153,14 @@ function handleModalClosing() {
 
 function closeModal() {
   modal.style.display = "none";
+}
+
+function clearForm() {
+  const form = document.querySelector(".add-photo-form");
+  form.reset();
+  if (photoPreview) {
+    photoPreview = null;
+  }
 }
 
 function clearSuccessMessage() {
@@ -230,6 +242,7 @@ function handleModalAddPhoto() {
 
 async function displayListOfCategories() {
   const selectCategory = document.getElementById("category");
+  const selectedCategory = selectCategory.value;
   const response = await fetch("http://localhost:5678/api/categories");
   const categories = await response.json();
   selectCategory.innerHTML = '<option value="">Sélectionner une catégorie</option>';
@@ -239,6 +252,10 @@ async function displayListOfCategories() {
     option.textContent = category.name;
     selectCategory.appendChild(option);
   });
+
+  if (selectedCategory) {
+    selectCategory.value = selectedCategory;
+  }
 }
 
 function transferPhoto(typeOfUpload) {
@@ -248,7 +265,7 @@ function transferPhoto(typeOfUpload) {
   const errorMessage = document.querySelector(".error-message");
   const maxFileSize = 4 * 1024 * 1024;
   const allowedFileTypes = ["image/jpeg", "image/png"];
- 
+
   const files = typeOfUpload.files;
   if (files.length > 0) {
     const file = files[0];
@@ -270,12 +287,12 @@ function transferPhoto(typeOfUpload) {
       photoPreview = e.target.result;
     };
     reader.readAsDataURL(file);
-    
+
     const dataTransfer = new DataTransfer();
     dataTransfer.items.add(file);
     fileInput.files = dataTransfer.files;
 
-    validateForm()
+    validateForm();
   }
 }
 
@@ -284,7 +301,6 @@ function validateForm() {
   const titleInput = document.getElementById("title");
   const categorySelect = document.getElementById("category");
   const validateButton = document.querySelector(".validate-btn");
- 
 
   const FileInputIsValid = fileInput.files.length > 0;
   const titleInputIsValid = titleInput.value.trim().length > 2;
@@ -321,8 +337,6 @@ function ValidationFormListeners() {
 function handleWorkCreation() {
   const fileInput = document.getElementById("fileElem");
   const form = document.querySelector(".add-photo-form");
-  const dropZoneEmpty = document.querySelector(".dropzone-empty");
-  const dropZoneFull = document.querySelector(".dropzone-full");
   const titleInput = document.getElementById("title");
   const categorySelect = document.getElementById("category");
   const message = document.querySelector(".message");
@@ -348,25 +362,24 @@ function handleWorkCreation() {
       const result = await response.json();
       message.innerText = "Photo ajoutée avec succès !";
       works.push({
-        "id": result.id,
-        "title": result.title,
-        "imageUrl": result.imageUrl,
-        "categoryId": result.categoryId,
-        "userId": result.userId,
-        "category": {
-          "id": result.categoryId,
-          "name": categorySelect.options[categorySelect.selectedIndex].text
-        }
+        id: result.id,
+        title: result.title,
+        imageUrl: result.imageUrl,
+        categoryId: result.categoryId,
+        userId: result.userId,
+        category: {
+          id: result.categoryId,
+          name: categorySelect.options[categorySelect.selectedIndex].text,
+        },
       });
       clearGallery();
       clearGalleryOfModal();
       handleModalPhotoGallery();
       displayWorks(works);
-      form.reset();
+      addCategoryButtons();
+      clearForm();
       validateForm();
       switchDisplayComponents(".dropzone-full", ".dropzone-empty");
-      photoPreview = null;
-
     } catch (error) {
       console.error("Erreur :", error);
       alert("Une erreur est survenue lors de l'envoi.");

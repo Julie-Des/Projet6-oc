@@ -258,8 +258,8 @@ nav li a:hover {
 
 #modal .close-cross-icon {
 	position: absolute;
-	right: 25px;
-	top: 25px;
+	right: 35px;
+	top: 35px;
 }
 
 #modal h3 {
@@ -301,13 +301,14 @@ nav li a:hover {
 	font-family: 'Syne';
 	font-weight: 700;
 	padding: 9px 40px;
+	margin-bottom: 5px;
 	cursor: pointer;
 }
 
 #modal .arrow-left {
 	position: absolute;
 	top: 25px;
-	left: 25px;
+	left: 30px;
 }
 
 #modal .modal-add-photo {
@@ -323,7 +324,6 @@ nav li a:hover {
 	display: flex;
 	flex-direction: column;
 }
-
 
 #modal .add-photo-container .dropzone-empty {
 	background-color: #E8F1F6;
@@ -351,7 +351,6 @@ nav li a:hover {
 	box-sizing: border-box;
 }
 
-
 #modal .visually-hidden {
 	height: 0px;
 	width: 0px;
@@ -372,7 +371,7 @@ nav li a:hover {
 }
 
 #modal .photo-preview {
-	width: 40%;
+	width: 31%;
 	height: 169px;
 	object-fit: cover;
 }
@@ -421,7 +420,7 @@ nav li a:hover {
 	font-weight: 700;
 	padding: 9px 40px;
 	width: 50%;
-	margin: 0 auto 10px;
+	margin: 0 auto;
 	cursor: not-allowed;
 }
 
@@ -433,7 +432,7 @@ nav li a:hover {
 
 #modal .message {
 	color:#0ab133;
-	margin: 10px auto;
+	margin: 10px auto 0;
 }
 
 #contact {
