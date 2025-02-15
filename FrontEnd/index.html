@@ -12,7 +12,7 @@
     />
     <meta name="description" content="" />
     <link rel="stylesheet" href="./assets/style.css" />
-    <script type="module" src="./assets/script.js" defer></script>
+    <script type="module" src="./assets/script.js"></script>
   </head>
   <body>
     <div class="banner-edit-containeur"></div>
@@ -26,7 +26,7 @@
           <li><a href="#contact">contact</a></li>
           <li><a href="./assets/login.html" class="logout">login</a></li>
           <li>
-            <img src="./assets/icons/icons8-instagram 1.png" alt="Instagram" />
+            <img src="./assets/icons/icons8-instagram1.png" alt="Instagram" />
           </li>
         </ul>
       </nav>
@@ -80,7 +80,7 @@
               <div class="add-photo-container">
                 <div class="dropzone-empty">
                   <img src="./assets/icons/picture-icon.png" alt="Icone photo" />
-                  <input type="file" id="fileElem" multiple accept="image/*" class="visually-hidden" required/>
+                  <input type="file" id="fileElem" multiple accept="image/*" class="visually-hidden" required />
                   <label for="fileElem">+ Ajouter photo</label>
                   <p>jpg, png: 4mo max</p>
                   <p class="error-message"></p>
@@ -89,13 +89,14 @@
               </div>
               <div class="inputs-title-and-category">
                 <label for="title" class="title-label">Titre</label>
-                <input type="text" name="title" id="title"/>
+                <input type="text" name="title" id="title" />
                 <p class="message-input-title"></p>
                 <label for="category" class="category-label">Catégorie</label>
                 <select name="category" id="category"></select>
               </div>
               <button type="submit" class="validate-btn">Valider</button>
-              <p class="message"></p>
+              <p class="success-message"></p>
+              <p class="unsuccess-message"></p>
             </form>
           </div>
         </div>

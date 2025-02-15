@@ -26,8 +26,8 @@ function switchToEditMode() {
 
 async function getWorks() {
   const response = await fetch("http://localhost:5678/api/works");
-  const works = await response.json();
-  return works;
+  const retrievedWorks = await response.json();
+  return retrievedWorks;
 }
 
 function displayWorks(worksToDisplay) {
@@ -133,14 +133,18 @@ function handleModalClosing() {
   closeCrosses.forEach((closeCross) =>
     closeCross.addEventListener("click", () => {
       closeModal();
-      clearSuccessMessage();
+      clearMessage(".success-message");
+      clearMessage(".unsuccess-message");
+      clearMessage(".error-message");
       clearForm();
     })
   );
 
   modal.addEventListener("click", () => {
     closeModal();
-    clearSuccessMessage();
+    clearMessage(".success-message");
+    clearMessage(".unsuccess-message");
+    clearMessage(".error-message");
     clearForm();
   });
 
@@ -162,9 +166,8 @@ function clearForm() {
   }
 }
 
-function clearSuccessMessage() {
-  const message = document.querySelector(".message");
-  message.innerText = "";
+function clearMessage(selector) {
+  document.querySelector(selector).innerText = "";
 }
 
 function handleModalPhotoGallery() {
@@ -211,14 +214,16 @@ function handleModalAddPhoto() {
     } else {
       switchDisplayComponents(".dropzone-full", ".dropzone-empty");
     }
-    ValidationFormListeners();
+    addValidationFormListeners();
   });
 
   // Go back to the modal gallery
   const arrowLeft = document.querySelector(".arrow-left");
   arrowLeft.addEventListener("click", () => {
     switchDisplayComponents(".modal-add-photo", ".modal-gallery");
-    clearSuccessMessage();
+    clearMessage(".success-message");
+    clearMessage(".unsuccess-message");
+    clearMessage(".error-message");
   });
 
   // Transfert an image
@@ -257,15 +262,16 @@ async function displayListOfCategories() {
   }
 }
 
-function transferPhoto(typeOfUpload) {
-  clearSuccessMessage();
+function transferPhoto(inputElement) {
+  clearMessage(".success-message");
+  clearMessage(".unsuccess-message");
   const dropZoneFull = document.querySelector(".dropzone-full");
   const fileInput = document.getElementById("fileElem");
   const errorMessage = document.querySelector(".error-message");
   const maxFileSize = 4 * 1024 * 1024;
   const allowedFileTypes = ["image/jpeg", "image/png"];
 
-  const files = typeOfUpload.files;
+  const files = inputElement.files;
   if (files.length > 0) {
     const file = files[0];
 
@@ -282,8 +288,9 @@ function transferPhoto(typeOfUpload) {
     reader.onload = (e) => {
       switchDisplayComponents(".dropzone-empty", ".dropzone-full");
       dropZoneFull.innerHTML = `<img src="${e.target.result}" class="photo-preview">`;
-      errorMessage.innerText = "";
+      clearMessage(".error-message");
       photoPreview = e.target.result;
+      validateForm();
     };
     reader.readAsDataURL(file);
 
@@ -300,19 +307,23 @@ function validateForm() {
   const titleInput = document.getElementById("title");
   const categorySelect = document.getElementById("category");
   const validateButton = document.querySelector(".validate-btn");
+  const errorMessage = document.querySelector(".error-message");
 
-  const FileInputIsValid = fileInput.files.length > 0;
+  const fileInputIsValid = fileInput.files.length > 0;
   const titleInputIsValid = titleInput.value.trim().length > 2;
   const categoryIsSelected = categorySelect.value !== "";
+  const errorOnFile = errorMessage.innerText != "";
 
-  if (FileInputIsValid && titleInputIsValid && categoryIsSelected) {
+  if (fileInputIsValid && titleInputIsValid && categoryIsSelected && !errorOnFile) {
     validateButton.classList.add("active");
+    return true;
   } else {
     validateButton.classList.remove("active");
+    return false;
   }
 }
 
-function ValidationFormListeners() {
+function addValidationFormListeners() {
   const fileInput = document.getElementById("fileElem");
   const titleInput = document.getElementById("title");
   const categorySelect = document.getElementById("category");
@@ -323,7 +334,7 @@ function ValidationFormListeners() {
     const titleInputIsValid = titleInput.value.trim().length > 2;
     if (titleInputIsValid) {
       titleInput.style.outline = "none";
-      messageTitleInput.innerText = "";
+      clearMessage(".message-input-title");
     } else {
       titleInput.style.outline = "1px solid red";
       messageTitleInput.innerText = "Le titre doit contenir plus de 2 caractères";
@@ -338,50 +349,53 @@ function handleWorkCreation() {
   const form = document.querySelector(".add-photo-form");
   const titleInput = document.getElementById("title");
   const categorySelect = document.getElementById("category");
-  const message = document.querySelector(".message");
+  const successMessage = document.querySelector(".success-message");
+  const unsuccessMessage = document.querySelector(".unsuccess-message");
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    formData.append("image", fileInput.files[0]);
-    formData.append("title", titleInput.value);
-    formData.append("category", categorySelect.value);
+    if (validateForm()) {
+      const formData = new FormData();
+      formData.append("image", fileInput.files[0]);
+      formData.append("title", titleInput.value);
+      formData.append("category", categorySelect.value);
 
-    try {
-      const token = window.localStorage.getItem("token");
-      const response = await fetch("http://localhost:5678/api/works", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
+      try {
+        const token = window.localStorage.getItem("token");
+        const response = await fetch("http://localhost:5678/api/works", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData,
+        });
 
-      if (!response.ok) {
-        throw new Error("Erreur lors de l'envoi de l'image.");
+        if (!response.ok) {
+          throw new Error("Erreur lors de l'envoi de l'image");
+        }
+
+        const result = await response.json();
+        successMessage.innerText = "Photo ajoutée avec succès !";
+        works.push({
+          id: result.id,
+          title: result.title,
+          imageUrl: result.imageUrl,
+          categoryId: result.categoryId,
+          userId: result.userId,
+          category: {
+            id: result.categoryId,
+            name: categorySelect.options[categorySelect.selectedIndex].text,
+          },
+        });
+        clearGallery();
+        clearGalleryOfModal();
+        handleModalPhotoGallery();
+        displayWorks(works);
+        addCategoryButtons();
+        clearForm();
+        validateForm();
+        switchDisplayComponents(".dropzone-full", ".dropzone-empty");
+      } catch (error) {
+        console.error("Erreur :", error);
+        unsuccessMessage.innerText = "Une erreur est survenue lors de l'envoi";
       }
-
-      const result = await response.json();
-      message.innerText = "Photo ajoutée avec succès !";
-      works.push({
-        id: result.id,
-        title: result.title,
-        imageUrl: result.imageUrl,
-        categoryId: result.categoryId,
-        userId: result.userId,
-        category: {
-          id: result.categoryId,
-          name: categorySelect.options[categorySelect.selectedIndex].text,
-        },
-      });
-      clearGallery();
-      clearGalleryOfModal();
-      handleModalPhotoGallery();
-      displayWorks(works);
-      addCategoryButtons();
-      clearForm();
-      validateForm();
-      switchDisplayComponents(".dropzone-full", ".dropzone-empty");
-    } catch (error) {
-      console.error("Erreur :", error);
-      alert("Une erreur est survenue lors de l'envoi.");
     }
   });
 }
