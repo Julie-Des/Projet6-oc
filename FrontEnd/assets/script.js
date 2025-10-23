@@ -25,7 +25,7 @@ function switchToEditMode() {
 // FONCTIONS
 
 async function getWorks() {
-  const response = await fetch("http://localhost:5678/api/works");
+  const response = await fetch(`${API_URL}/api/works`);
   const retrievedWorks = await response.json();
   return retrievedWorks;
 }
@@ -188,7 +188,7 @@ function handleModalPhotoGallery() {
     // Delete a work
     trashIcon.addEventListener("click", async () => {
       const token = window.localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5678/api/works/${work.id}`, {
+      const response = await fetch(`${API_URL}/api/works/${work.id}`, {
         method: "delete",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -247,7 +247,7 @@ function handleModalAddPhoto() {
 async function displayListOfCategories() {
   const selectCategory = document.getElementById("category");
   const selectedCategory = selectCategory.value;
-  const response = await fetch("http://localhost:5678/api/categories");
+  const response = await fetch(`${API_URL}/api/categories`);
   const categories = await response.json();
   selectCategory.innerHTML = '<option value="">Sélectionner une catégorie</option>';
   categories.forEach((category) => {
@@ -361,7 +361,7 @@ function handleWorkCreation() {
 
       try {
         const token = window.localStorage.getItem("token");
-        const response = await fetch("http://localhost:5678/api/works", {
+        const response = await fetch(`${API_URL}/api/works`, {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
           body: formData,

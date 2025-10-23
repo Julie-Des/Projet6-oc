@@ -9,7 +9,7 @@ function sendLogin() {
       password: event.target.querySelector("[name=password]").value,
     };
 
-    const response = await fetch("http://localhost:5678/api/users/login", {
+    const response = await fetch(`${API_URL}/api/users/login`, {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(loginValues),
