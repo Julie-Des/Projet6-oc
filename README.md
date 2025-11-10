@@ -65,8 +65,35 @@ This project is part of the Web Integrator training course – OpenClassrooms.
 
 ## 📦 Getting Started
 
-- Launch the backend from your terminal by following the instructions in the ReadMe file.
-- If you want to view the backend and frontend code, do so in two different instances of VSCode to avoid any problems.
+### Prerequisites
+
+- Node.js and npm installed
+- A code editor (e.g., VS Code)
+- Basic knowledge of HTML, CSS, and JavaScript
+
+### Installation
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone https://github.com/Julie-Des/Projet6-oc
+    cd Projet6-oc
+    ```
+
+If you want to view the backend and frontend code, do so in two different instances of VSCode to avoid any problems.
+
+2. **Navigate to the Frontend:**
+
+    ```bash
+    cd ../FrontEnd
+    ```
+    
+3. **Navigate to the Backend:**
+
+    ```bash
+    cd ../Backend
+    ```
+Launch the backend from your terminal by following the instructions in the ReadMe file.
 
 ---
 
